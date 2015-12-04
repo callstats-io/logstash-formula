@@ -35,12 +35,12 @@
     {%- elif value is sameas True or value is sameas False %}
       {{- output_indented(col, (key + ' => ' + value|string|lower)) }}
     {%- elif value is string or value is number %}
-      {{- output_indented(col, (key + ' => "' + value|string + '"')) }}
+      {{- output_indented(col, (key + ' => "' + value|string|replace('"', '\\"') + '"')) }}
     {%- elif value is mapping %}
       {{- output_indented(col, (key + ' => {')) }}
       {%- set col = col + logstash.indent %}
       {%- for attr_key, attr_value in value.iteritems() %}
-        {{- output_indented(col, (attr_key + ' => "' + attr_value + '"')) }}
+        {{- output_indented(col, (attr_key + ' => "' + attr_value|replace('"', '\\"') + '"')) }}
       {%- endfor %}
       {%- set col = col - logstash.indent %}
       {{- output_indented(col, '}') }}
@@ -48,7 +48,7 @@
       {{- output_indented(col, key + ' => [') }}
       {%- set col = col + logstash.indent %}
       {%- for item in value %}
-        {{- output_indented(col, '"' + item + '"') }}{%- if loop.last == false %},{%- endif -%}
+        {{- output_indented(col, '"' + item|replace('"', '\\"') + '"') }}{%- if loop.last == false %},{%- endif -%}
       {%- endfor %}
       {%- set col = col - logstash.indent %}
       {{- output_indented(col, ']') }}
